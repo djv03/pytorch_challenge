@@ -1,4 +1,4 @@
-import torch # type: ignore
+import torch as torch
 import numpy as np
 import os
 import socket
@@ -19,7 +19,8 @@ class Trainer:
                  train_dl       = None,
                  val_test_dl    = None,
                  cuda           = True,
-                 early_stopping_patience = -1):  
+                 early_stopping_patience = -1,
+                 scheduler= None):  
         
         self._model         = model
         self._criterion     = crit
@@ -27,6 +28,7 @@ class Trainer:
         self._train_dataloader  = train_dl
         self._val_dataloader    = val_test_dl
         self._use_cuda          = cuda
+        self._scheduler = scheduler
 
         self._early_stopping_patience = early_stopping_patience
 
@@ -129,6 +131,9 @@ class Trainer:
         while curr_epoch < epochs:            
             train_loss = self.train_epoch()
             val_loss, val_metric = self.val_test()
+
+            if self._scheduler:
+                self._scheduler.step(val_loss)
             
             if len(val_losses) > 0 and val_loss < min(val_losses):
                 self.save_checkpoint(curr_epoch)

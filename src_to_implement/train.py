@@ -33,10 +33,14 @@ val_loader= t.utils.data.DataLoader(val_dataset,batch_size=BATCH_SIZE,shuffle=Fa
 model = ResNet()
 
 # set up a suitable loss criterion (you can find a pre-implemented loss functions in t.nn)
-criterion= nn.BCEWithLogitsLoss()
+# criterion= nn.BCEWithLogitsLoss()
+criterion= nn.BCELoss()
 
 # set up the optimizer (see t.optim)
-optimizer= t.optim.Adam(model.parameters(),lr=0.01)
+# optimizer= t.optim.Adam(model.parameters(),lr=0.01)
+optimizer = t.optim.Adam(model.parameters(), lr=1e-4)
+
+scheduler = t.optim.lr_scheduler.ReduceLROnPlateau(optimizer, patience=3, factor=0.5)
 
 # create an object of type Trainer and set its early stopping criterion
 trainer= Trainer(
@@ -46,11 +50,13 @@ trainer= Trainer(
                  train_dl=train_loader,                # Training data set
                  val_test_dl=val_loader,             # Validation (or test) data set
                  cuda=t.cuda.is_available(),                    # Whether to use the GPU
-                 early_stopping_patience=-5,
+                 early_stopping_patience=5,
+                 scheduler=scheduler,
 )
 
 # go, go, go... call fit on trainer
-res= trainer.fit(epochs=2)
+res= trainer.fit(epochs=40)
+
 
 # plot the results
 train_losses= res[0]

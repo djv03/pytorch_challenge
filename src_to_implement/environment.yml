@@ -1,21 +1,22 @@
 name: dl-challenge
 channels:
+  - pytorch
   - conda-forge
   - defaults
-  - pytorch
+
 dependencies:
-  - python=3.7
-  - numpy<=1.16.4
+  - python=3.10
+  - numpy
   - scipy
   - pandas
   - matplotlib
-  - pytorch==1.3.*
-  - torchvision==0.4.*
-  - cuda100
-  - pip
+  - pytorch
+  - torchvision
+  - cpuonly
   - scikit-image
   - scikit-learn
   - jupyterlab
-  - tqdm>=4.36
+  - tqdm
+  - pip
   - pip:
-    - onnxruntime
+      - onnxruntime
